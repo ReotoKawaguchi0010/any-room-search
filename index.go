@@ -2,6 +2,7 @@ package search
 
 import (
 	"container/list"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strconv"
@@ -70,6 +71,30 @@ func (pl PostingsList) String() string {
 		str = append(str, e.Value.(*Posting).String())
 	}
 	return strings.Join(str, "=>")
+}
+
+func (pl PostingsList) MarshallJSON() ([]byte, error) {
+
+	postings := make([]*Posting, 0, pl.Len())
+
+	for e := pl.Front(); e != nil; e = e.Next() {
+		postings = append(postings, e.Value.(*Posting))
+	}
+	return json.Marshal(postings)
+}
+
+func (pl *PostingsList) UnmarshallJSON(b []byte) error {
+
+	var postings []*Posting
+	if err := json.Unmarshal(b, &postings); err != nil {
+		return err
+	}
+	pl.List = list.New()
+	for _, posting := range postings {
+		pl.add(posting)
+	}
+	return nil
+
 }
 
 type Index struct {

@@ -1,7 +1,6 @@
 package search
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -22,8 +21,6 @@ func TestUpdate(t *testing.T) {
 	}
 
 	actual := indexer.index
-
-	fmt.Println("test", actual)
 
 	expected := &Index{
 		Dictionary: map[string]PostingsList{
