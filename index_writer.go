@@ -2,7 +2,6 @@ package search
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -27,7 +26,7 @@ func (w *IndexWriter) Flush(index *Index) error {
 }
 
 func (w *IndexWriter) postingsList(term string, list PostingsList) error {
-	bytes, err := json.Marshal(list)
+	bytes, err := list.MarshallJSON()
 	if err != nil {
 		return err
 	}
