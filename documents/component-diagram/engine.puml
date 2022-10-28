@@ -1,11 +1,30 @@
 
 @startuml
 
-() "First Interface"
-() "Another interface" as Interf2
-interface Interf3
-interface "Last\ninterface" as Interf4
 
-[component]
-footer //Adding "component" to force diagram to be a **component diagram**//
+
+package "indexer" {
+    component "index"
+    component "tokenizer"
+    component "sort"
+    component "merge"
+}
+
+package "index searcher" {
+    component "query"
+}
+
+package "index manager" {
+    component "writer"
+    component "reader"
+}
+
+package "document manager"
+
+
+[indexer] --> [index manager]
+[indexer] --> [document manager]
+[index manager] --> [index searcher]
+[document manager] --> [index searcher]
+
 @enduml

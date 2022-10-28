@@ -38,7 +38,10 @@ func (r *IndexReader) postings(term string) *PostingsList {
 	if err != nil {
 		return nil
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+		}
+	}()
 
 	bytes, err := ioutil.ReadAll(file)
 	if err != nil {
@@ -62,7 +65,10 @@ func (r *IndexReader) totalDocCount() int {
 	if err != nil {
 		return 0
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+		}
+	}()
 	bytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		return 0

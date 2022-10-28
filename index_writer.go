@@ -36,7 +36,10 @@ func (w *IndexWriter) postingsList(term string, list PostingsList) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+		}
+	}()
 
 	writer := bufio.NewWriter(file)
 	_, err = writer.Write(bytes)
@@ -52,7 +55,10 @@ func (w *IndexWriter) docCount(count int) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+		}
+	}()
 	_, err = file.Write([]byte(strconv.Itoa(count)))
 	return err
 }

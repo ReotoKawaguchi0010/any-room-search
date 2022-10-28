@@ -43,11 +43,11 @@ func NewPostingsList(postings ...*Posting) PostingsList {
 	return PostingsList{l}
 }
 
-func (pl PostingsList) add(p *Posting) {
+func (pl *PostingsList) add(p *Posting) {
 	pl.PushBack(p)
 }
 
-func (pl PostingsList) last() *Posting {
+func (pl *PostingsList) last() *Posting {
 	e := pl.List.Back()
 	if e == nil {
 		return nil
@@ -55,7 +55,7 @@ func (pl PostingsList) last() *Posting {
 	return e.Value.(*Posting)
 }
 
-func (pl PostingsList) Add(new *Posting) {
+func (pl *PostingsList) Add(new *Posting) {
 	last := pl.last()
 	if last == nil || last.DocID != new.DocID {
 		pl.add(new)
@@ -65,7 +65,7 @@ func (pl PostingsList) Add(new *Posting) {
 	last.TermFrequency++
 }
 
-func (pl PostingsList) String() string {
+func (pl *PostingsList) String() string {
 	str := make([]string, 0, pl.Len())
 	for e := pl.Front(); e != nil; e = e.Next() {
 		str = append(str, e.Value.(*Posting).String())
@@ -73,7 +73,7 @@ func (pl PostingsList) String() string {
 	return strings.Join(str, "=>")
 }
 
-func (pl PostingsList) MarshallJSON() ([]byte, error) {
+func (pl *PostingsList) MarshallJSON() ([]byte, error) {
 
 	postings := make([]*Posting, 0, pl.Len())
 
@@ -137,9 +137,9 @@ type Cursor struct {
 	current      *list.Element
 }
 
-func (pl PostingsList) OpenCursor() *Cursor {
+func (pl *PostingsList) OpenCursor() *Cursor {
 	return &Cursor{
-		postingsList: &pl,
+		postingsList: pl,
 		current:      pl.Front(),
 	}
 }
