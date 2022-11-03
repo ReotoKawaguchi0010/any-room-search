@@ -12,8 +12,10 @@ func Tokenizer(text string) []string {
 	text = strings.ReplaceAll(text, "\n", "")
 	text = strings.ReplaceAll(text, "\r", "")
 	for _, c := range text {
-		fmt.Println(token)
-		if len(token) == 2 {
+		if c == 0 {
+			continue
+		}
+		if len([]rune(token)) == 2 {
 			token = ""
 			continue
 		}
@@ -21,5 +23,7 @@ func Tokenizer(text string) []string {
 		tokens = append(tokens, token)
 	}
 
-	return []string{}
+	fmt.Println(tokens)
+
+	return tokens
 }
