@@ -1,14 +1,27 @@
 package bpt
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func IsHigher(x, y string) bool {
+	if x == "" || y == "" || x == "\n" || y == "\n" {
+		return false
+	}
+
 	rx := []rune(x)
 	ry := []rune(y)
 
 	for i, v := range rx {
+
+		if ry[i] == v {
+			continue
+		}
 		if ry[i] > v {
 			return true
+		} else {
+			return false
 		}
 
 	}
@@ -16,9 +29,12 @@ func IsHigher(x, y string) bool {
 }
 
 type BPlusTree struct {
-	AverageSize uint
-	PageOffset  uint
-	PointerSize uint
+	AverageSize  uint
+	PageOffset   uint
+	PointerSize  uint
+	RootNode     *Node
+	InternalNode []*Node
+	LeafNode     []*Node
 }
 
 func NewBPlusTree() *BPlusTree {
@@ -33,27 +49,36 @@ func (bpt *BPlusTree) Insert(key string, value LeafInterface) {
 	err := root.open()
 	if err != nil {
 	}
-	if root.Key == "" {
-		root.insert([]byte(key))
-	} else {
-		var insertRoot []byte
-		var insertInternal []byte
 
-		if IsHigher(root.Key, key) {
-			insertRoot = []byte(key)
-			insertInternal = []byte(root.Key)
+	if root.isRoot() {
+		if root.Key == "" {
+			root.insert([]byte(key))
 		} else {
-			insertRoot = []byte(root.Key)
-			insertInternal = []byte(key)
+			root.Key = strings.ReplaceAll(root.Key, "\n", "")
+			var insertRoot []byte
+			var insertInternal []byte
+
+			if IsHigher(root.Key, key) {
+				insertRoot = []byte(key)
+				insertInternal = []byte(root.Key)
+			} else {
+				insertRoot = []byte(root.Key)
+				insertInternal = []byte(key)
+			}
+			root.insert(insertRoot)
+			internal := NewNode("internal1.log", InternalNode)
+			internal.insert(insertInternal)
 		}
-		root.insert(insertRoot)
-		internal := NewNode("internal1.log", InternalNode)
-		internal.insert(insertInternal)
 	}
 
 	leaf := NewNode("leaf_1.log", LeafNode)
 	v := fmt.Sprintf("%s:%s", key, value.ToString())
 	leaf.insert([]byte(v))
+}
+
+func (bpt *BPlusTree) getLeafNode(name string) {
+	node := NewNode(name, LeafNode)
+	fmt.Println(node.Values)
 
 }
 

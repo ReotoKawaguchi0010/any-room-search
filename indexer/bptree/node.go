@@ -69,6 +69,8 @@ func (n *Node) insert(in []byte) {
 	file, err := os.OpenFile(name, flag, 0744)
 	if err != nil {
 	}
+	ln := []byte("\n")
+	in = append(in, ln[0])
 	_, err = file.Write(in)
 	if err != nil {
 	}
