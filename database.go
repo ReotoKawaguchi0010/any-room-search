@@ -39,7 +39,7 @@ func (d *Tokens) Create(name string) error {
 	query := `
 CREATE TABLE %s (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    token      TEXT NOT NULL,
+    token      TEXT UNIQUE NOT NULL,
     docs_count INT NOT NULL,
     postings   BLOB NOT NULL
 );
@@ -50,6 +50,7 @@ CREATE TABLE %s (
 		log.Printf("exec error %v\n", err)
 		return err
 	}
+
 	return nil
 }
 
