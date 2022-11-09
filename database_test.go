@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var name = "./test.db"
+var name = "./testdata/test.db"
 
 func TestConnection(t *testing.T) {
 	db := NewTokens()

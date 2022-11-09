@@ -25,15 +25,13 @@ func BiGram(text string) []string {
 	chars := []rune(text)
 
 	for i := 0; i < len(chars); i++ {
-		token = []rune{}
-		var bc rune
-		var ac rune
 		if i == 0 {
 			continue
-		} else {
-			bc = chars[i-1]
-			ac = chars[i]
 		}
+
+		token = []rune{}
+		bc := chars[i-1]
+		ac := chars[i]
 		token = append(token, bc)
 		token = append(token, ac)
 		tokens = append(tokens, string(token))
