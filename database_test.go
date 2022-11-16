@@ -1,6 +1,7 @@
 package search
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -66,9 +67,10 @@ func TestTokensInsert(t *testing.T) {
 	}
 	db.Create(table)
 	db.Insert("これ", 2, []byte("1,2,4,6"))
-	row := conn.QueryRow("SELECT token FROM user_tokens WHERE id = ?", 1)
+	row := conn.QueryRow("SELECT token FROM user_tokens WHERE token = ?", "これ")
 	var token string
 	row.Scan(&token)
+	fmt.Println(token)
 	if token != "これ" {
 		t.Errorf("get error \n")
 	}

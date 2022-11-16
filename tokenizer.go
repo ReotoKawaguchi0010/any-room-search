@@ -9,6 +9,9 @@ import (
 )
 
 type Tokenizer struct {
+	TokenID     uint
+	PostingList *PostingsList
+	DocsCount   uint
 }
 
 func NewTokenizer() *Tokenizer {

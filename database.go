@@ -9,7 +9,6 @@ import (
 )
 
 type TokensScheme struct {
-	ID        int
 	Token     string
 	DocsCount int
 	Postings  []byte
@@ -38,8 +37,7 @@ func (d *Tokens) Create(name string) error {
 	d.Name = name
 	query := `
 CREATE TABLE %s (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    token      TEXT UNIQUE NOT NULL,
+    token      TEXT PRIMARY KEY,
     docs_count INT NOT NULL,
     postings   BLOB NOT NULL
 );

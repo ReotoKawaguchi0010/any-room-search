@@ -4,10 +4,7 @@ import (
 	"container/list"
 	"encoding/json"
 	"fmt"
-	"sort"
-	"strconv"
 	"strings"
-	"unicode/utf8"
 )
 
 type DocumentID int64
@@ -26,7 +23,7 @@ func NewPosting(docID DocumentID, positions ...int) *Posting {
 	}
 }
 
-func (p Posting) String() string {
+func (p *Posting) String() string {
 	return fmt.Sprintf("(%v, %v, %v)",
 		p.DocID, p.TermFrequency, p.Positions)
 }
@@ -95,80 +92,4 @@ func (pl *PostingsList) UnmarshallJSON(b []byte) error {
 	}
 	return nil
 
-}
-
-type Index struct {
-	Dictionary     map[string]PostingsList
-	TotalDocsCount int
-}
-
-func NewIndex() *Index {
-	dict := make(map[string]PostingsList)
-	return &Index{
-		Dictionary:     dict,
-		TotalDocsCount: 0,
-	}
-}
-
-func (idx Index) String() string {
-	var padding int
-	keys := make([]string, 0, len(idx.Dictionary))
-	for k := range idx.Dictionary {
-		l := utf8.RuneCountInString(k)
-		if padding < 1 {
-			padding = l
-		}
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	strs := make([]string, len(keys))
-	format := " [%-" + strconv.Itoa(padding) + "s] -> %s"
-	for i, k := range keys {
-		if postingList, ok := idx.Dictionary[k]; ok {
-			strs[i] = fmt.Sprintf(format, k, postingList.String())
-		}
-	}
-	return fmt.Sprintf("total documents : %v\ndictionary:\n%v\n",
-		idx.TotalDocsCount, strings.Join(strs, "\n"))
-}
-
-type Cursor struct {
-	postingsList *PostingsList
-	current      *list.Element
-}
-
-func (pl *PostingsList) OpenCursor() *Cursor {
-	return &Cursor{
-		postingsList: pl,
-		current:      pl.Front(),
-	}
-}
-
-func (c *Cursor) Next() {
-	c.current = c.current.Next()
-}
-
-func (c *Cursor) NextDoc(id DocumentID) {
-	for !c.Empty() && c.DocId() < id {
-		c.Next()
-	}
-}
-
-func (c *Cursor) Empty() bool {
-	if c.current == nil {
-		return true
-	}
-	return false
-}
-
-func (c *Cursor) Posting() *Posting {
-	return c.current.Value.(*Posting)
-}
-
-func (c *Cursor) DocId() DocumentID {
-	return c.current.Value.(*Posting).DocID
-}
-
-func (c *Cursor) String() string {
-	return fmt.Sprint(c.Posting())
 }
